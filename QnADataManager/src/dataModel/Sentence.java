@@ -22,9 +22,9 @@ public class Sentence {
 
     private String text;
     private List<Word> words;
-    private List<String> paraphrases;
+    private List<Paraphrase> paraphrases;
 
-    public Sentence(String text, List<Word> words, List<String> paraphrases) {
+    public Sentence(String text, List<Word> words, List<Paraphrase> paraphrases) {
         this.text = text;
         this.words = words;
         this.paraphrases = paraphrases;
@@ -33,7 +33,7 @@ public class Sentence {
     public Sentence(String text) {
         this.text = text;
         generateWords();
-        paraphrases = new ArrayList<String>();
+        generateParaphrases();
     }
 
     public Sentence(JSONObject jSentence) {
@@ -68,9 +68,9 @@ public class Sentence {
     }
 
     private void jsonToParaphrases(JSONArray jParaphrases) {
-        paraphrases = new ArrayList<String>();
+        paraphrases = new ArrayList<Paraphrase>();
         for (Object object : jParaphrases) {
-            paraphrases.add((String) object);
+            paraphrases.add(new Paraphrase((JSONObject) object));
         }
 
     }
@@ -98,8 +98,8 @@ public class Sentence {
     private JSONArray paraphrasesToJSON() {
         JSONArray jParaphrases = new JSONArray();
         if (paraphrases != null && !paraphrases.isEmpty()) {
-            for (String paraphrase : paraphrases) {
-                jParaphrases.add(paraphrase);
+            for (Paraphrase paraphrase : paraphrases) {
+                jParaphrases.add(paraphrase.toJSON());
             }
         }
         return jParaphrases;
@@ -113,7 +113,7 @@ public class Sentence {
         return words;
     }
 
-    public List<String> getParaphrases() {
+    public List<Paraphrase> getParaphrases() {
         return paraphrases;
     }
 
@@ -125,17 +125,53 @@ public class Sentence {
         this.words = words;
     }
 
-    public void setParaphrases(List<String> paraphrases) {
+    public void setParaphrases(List<Paraphrase> paraphrases) {
         this.paraphrases = paraphrases;
     }
 
     private void generateWords(){
         words = new ArrayList<Word>();
-        List<String> strings = nlp.TextHandler.separateWords(text);
-        for(String string: strings){
-            Word word = new Word(string);
+        
+        String taggedString = nlp.TextHandler.tagString(text);
+        
+        List<String> taggedStrings = nlp.TextHandler.separateWords(taggedString);
+        
+        for(String string: taggedStrings){
+            int index = string.indexOf("_");
+            String value = string.substring(0, index);
+            String tag = string.substring(index+1, string.length());
+            
+            Word word = new Word(value,tag);
+            
             words.add(word);
         }
+        
+    }
+    
+    private void generateParaphrases(){
+        paraphrases = new ArrayList<Paraphrase>();
+        
+        //rodar o package
+        
+        for(Word word: this.words){
+            String text = word.getValue();
+            List<String> ps = new ArrayList<String>();
+            ps.add(text+"x");
+            ps.add(text+"y");
+            ps.add(text+"z");
+            
+            Paraphrase paraphrase = new Paraphrase(text, ps);
+            this.paraphrases.add(paraphrase);
+        }
+        int i = 0;
+        String t2 = words.get(i).getValue()+" "+words.get(i+1).getValue();
+        
+        
+        //Resultado do paraphrases package
+        
+        
+        
+        
         
     }
     

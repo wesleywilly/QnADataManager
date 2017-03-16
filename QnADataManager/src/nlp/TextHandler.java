@@ -6,6 +6,7 @@
 package nlp;
 
 import dataModel.Sentence;
+import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,6 +152,17 @@ public class TextHandler {
         return words;
         
     }
+    
+    public static String tagString(String text){
+        String taggers_url = "POSTagger/stanford-postagger-full-2015-12-09/models/";
+        String trained_tagger = "english-left3words-distsim.tagger";
+        MaxentTagger tagger = new MaxentTagger(taggers_url+trained_tagger);
+        
+        String taggedString = tagger.tagString(text);
+        
+        return taggedString;
+    }
+    
     
 
 }
