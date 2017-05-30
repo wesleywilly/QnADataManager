@@ -16,60 +16,46 @@ import org.json.simple.JSONObject;
  */
 public class Paraphrase {
     
-    private static final String TEXT = "text";
-    private static final String PARAPHRASES = "paraphrases";
+    private static final String PHRASE = "text";
+    private static final String PARAPHRASE = "paraphrases";
     
     
-    private String text;
-    private List<String> paraphrases;
+    private String phrase;
+    private String paraphrase;
 
-    public Paraphrase(String text, List<String> paraphrases) {
-        this.text = text;
-        this.paraphrases = paraphrases;
+    public Paraphrase(String text, String paraphrases) {
+        this.phrase = text;
+        this.paraphrase = paraphrases;
     }
 
     public Paraphrase(JSONObject jParaphrases){
-        text = (String) jParaphrases.get(TEXT);
-        jsonToParaphrases((JSONArray) jParaphrases.get(PARAPHRASES));
+        phrase = (String) jParaphrases.get(PHRASE);
+        paraphrase = (String) jParaphrases.get(PARAPHRASE) ;
     }
     
-    private void jsonToParaphrases(JSONArray jParaphrases){
-        paraphrases = new ArrayList<String>();
-        for(Object object: jParaphrases){
-            paraphrases.add((String) object);
-        }
-    }
     
     public JSONObject toJSON(){
         JSONObject jParaphrase = new JSONObject();
-        jParaphrase.put(TEXT, text);
-        jParaphrase.put(PARAPHRASES, paraphrasesToJSON());
+        jParaphrase.put(PHRASE, phrase);
+        jParaphrase.put(PARAPHRASE, paraphrase);
         
         return jParaphrase;
     }
-    
-    private JSONArray paraphrasesToJSON(){
-        JSONArray jParaphrases = new JSONArray();
-        for(String string: paraphrases){
-            jParaphrases.add(string);
-        }
-        return jParaphrases;
+
+    public String getPhrase() {
+        return phrase;
     }
 
-    public String getText() {
-        return text;
+    public void setPhrase(String text) {
+        this.phrase = text;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public String getParaphrases() {
+        return paraphrase;
     }
 
-    public List<String> getParaphrases() {
-        return paraphrases;
-    }
-
-    public void setParaphrases(List<String> paraphrases) {
-        this.paraphrases = paraphrases;
+    public void setParaphrases(String paraphrases) {
+        this.paraphrase = paraphrases;
     }
     
     

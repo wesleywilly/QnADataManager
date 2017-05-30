@@ -16,10 +16,10 @@ import java.util.List;
  */
 public class TextHandler {
 
-    private static final String[] SYMBOLS = {" ",".","!","?","\n","\r","\t"};
+    private static final String[] SYMBOLS = {" ",".","!","?","\n","\r","\t","-",","};
     private static final String[] SEPARATORS = {"\n","\r", ";", ".","?","!",":"};
 
-    private static String removeSymbolsFromBegin(String text){
+    public static String removeSymbolsFromBegin(String text){
         boolean end = false;
         
         while(!end){
@@ -158,7 +158,7 @@ public class TextHandler {
         String trained_tagger = "english-left3words-distsim.tagger";
         MaxentTagger tagger = new MaxentTagger(taggers_url+trained_tagger);
         
-        String taggedString = tagger.tagString(text);
+        String taggedString = tagger.tagString(text.toLowerCase());
         
         return taggedString;
     }

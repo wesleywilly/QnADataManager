@@ -24,14 +24,15 @@ public class TopicItem {
     private String text;
     private List<Sentence> sentences;
 
-    public TopicItem(String text, List<Sentence> sentences) {
+   /* public TopicItem(String text, List<Sentence> sentences) {
         this.text = text;
         this.sentences = sentences;
     }
+*/
 
-    public TopicItem(String text) {
+    public TopicItem(String text, List<Paraphrase> paraphrasesSet) {
         this.text = text;
-        generateSentences();
+        generateSentences(paraphrasesSet);
     }
 
     public TopicItem(JSONObject jTopicItem) {
@@ -85,14 +86,14 @@ public class TopicItem {
         this.sentences = sentences;
     }
 
-    public void generateSentences() {
+    public void generateSentences(List<Paraphrase> paraphrasesSet) {
         sentences = new ArrayList<Sentence>();
         text = TextHandler.removeDuplicatedSymbols(text);
         List<String> strings = TextHandler.separateBySeparators(text);
         List<Sentence> sentences = new ArrayList<Sentence>();
 
         for (String string : strings) {
-            sentences.add(new Sentence(string));
+            sentences.add(new Sentence(string, paraphrasesSet));
         }
 
         this.sentences = sentences;

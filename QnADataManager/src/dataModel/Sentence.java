@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package dataModel;
-
+import dataModel.DataSet;
+import dataAccess.FileManager;
+import dataAccess.ParaphraseManager;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
@@ -30,10 +32,10 @@ public class Sentence {
         this.paraphrases = paraphrases;
     }
 
-    public Sentence(String text) {
+    public Sentence(String text, List<Paraphrase> ParaphraseSet) {
         this.text = text;
         generateWords();
-        generateParaphrases();
+        generateParaphrases(ParaphraseSet);
     }
 
     public Sentence(JSONObject jSentence) {
@@ -89,7 +91,8 @@ public class Sentence {
         JSONArray jWords = new JSONArray();
         if (words != null && !words.isEmpty()) {
             for (Word word : words) {
-                jWords.add(word.toJSON());
+                if(!word.isStopword())
+                    jWords.add(word.toJSON());
             }
         }
         return jWords;
@@ -146,28 +149,50 @@ public class Sentence {
             words.add(word);
         }
         
+        //getting information from neighborhood of each word
+        for(int i=0; i<words.size();i++){
+            if(i-2>0){
+                words.get(i).collectInformation(words.get(i-2), -2);
+            }
+            if(i-1>0){
+                words.get(i).collectInformation(words.get(i-1), -1);
+            }
+            if(i+1<words.size()){
+                words.get(i).collectInformation(words.get(i+1), 1);
+            }
+            if(i+2<words.size()){
+                words.get(i).collectInformation(words.get(i+2), 2);
+            }
+        }
     }
     
-    private void generateParaphrases(){
+    
+    public void generateParaphrases(List<Paraphrase> paraphrasesSet){
         paraphrases = new ArrayList<Paraphrase>();
         
         //rodar o package
-        
-        for(Word word: this.words){
-            String text = word.getValue();
-            List<String> ps = new ArrayList<String>();
-            ps.add(text+"x");
-            ps.add(text+"y");
-            ps.add(text+"z");
+         
+        paraphrasesSet = ParaphraseManager.ImportPack();
+          int count = 0 ;
+          int count2 = 0 ;
+        for(count = 0 ; count < words.size()  ; count++ ){
+            {
+                for(count2 = 0 ; count2 < paraphrasesSet.size() ; count2 ++)
+                {
+                    if(words.get(count).getValue() == paraphrasesSet.get(count2).getPhrase())
+                    {
+                        this.paraphrases.add(paraphrasesSet.get(count2)) ;
+                    }
+                }
+                
+            }
             
-            Paraphrase paraphrase = new Paraphrase(text, ps);
-            this.paraphrases.add(paraphrase);
+            
+         
+           
         }
-        int i = 0;
-        String t2 = words.get(i).getValue()+" "+words.get(i+1).getValue();
         
-        
-        //Resultado do paraphrases package
+    
         
         
         

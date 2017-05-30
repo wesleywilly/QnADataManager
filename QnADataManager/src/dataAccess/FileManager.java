@@ -6,6 +6,7 @@
 package dataAccess;
 
 import dataModel.DataSet;
+import dataModel.Paraphrase;
 import dataModel.Topic;
 import dataModel.TopicItem;
 import java.io.FileNotFoundException;
@@ -88,12 +89,14 @@ public class FileManager {
                 JSONArray jTopics = (JSONArray) jObject.get("topics");
 
                 if (!jTopics.isEmpty() && jTopics != null) {
-
+                    
+                    List<Paraphrase> paraphrasesSet = ParaphraseManager.ImportPack() ;
+                    
                     for (Object object : jTopics) {
                         JSONObject jTopic = (JSONObject) object;
 
-                        TopicItem subject = new TopicItem((String) jTopic.get("subject"));
-                        TopicItem question = new TopicItem((String) jTopic.get("question"));
+                        TopicItem subject = new TopicItem((String) jTopic.get("subject"), paraphrasesSet);
+                        TopicItem question = new TopicItem((String) jTopic.get("question"), paraphrasesSet);
 
                         JSONArray jAnswers = (JSONArray) jTopic.get("answers");
 
@@ -101,7 +104,7 @@ public class FileManager {
 
                         if (jAnswers != null && !jAnswers.isEmpty()) {
                             for (Object answerObject : jAnswers) {
-                                TopicItem answer = new TopicItem((String) answerObject);
+                                TopicItem answer = new TopicItem((String) answerObject, paraphrasesSet);
                                 answers.add(answer);
                             }
                         }
@@ -141,5 +144,32 @@ public class FileManager {
         }
         return fr != null;
         
+    }
+    
+    public static DataSet loadparaphrase(String filePath)
+    {
+        DataSet dataSet = null;
+
+        JSONObject jObject = new JSONObject();
+
+        JSONParser parser = new JSONParser();
+
+        try {
+            jObject = (JSONObject)parser.parse(new FileReader(filePath));
+
+            dataSet = new DataSet(jObject);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("[FILE MANAGER] File not found!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("[FILE MANAGER] IO Error!");
+        } catch (ParseException ex) {
+            Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("[FILE MANAGER] Inconpatible JSON file!");
+        }
+
+        return dataSet;
     }
 }

@@ -27,6 +27,8 @@ public class Topic {
         this.subject = subject;
         this.question = question;
         this.answers = answers;
+         List<Paraphrase> paraphrasesSet; 
+         
     }
     
     public Topic(JSONObject jTopic){
