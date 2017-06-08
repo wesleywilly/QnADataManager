@@ -73,7 +73,7 @@ public class FileManager {
         return saved;
     }
 
-    public static DataSet loadOld(String filePath) {
+    public static DataSet loadRaw(String filePath) {
         DataSet dataSet = null;
 
         JSONObject jObject = new JSONObject();

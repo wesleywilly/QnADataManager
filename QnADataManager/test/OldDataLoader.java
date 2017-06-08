@@ -19,7 +19,7 @@ public class OldDataLoader {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DataSet ds = FileManager.loadOld("ya-la2.json");
+        DataSet ds = FileManager.loadRaw("ya-la2.json");
         FileManager.save(ds, "ya-la3.json");
         
         DataSet ds2 = FileManager.load("ya-la3.json");

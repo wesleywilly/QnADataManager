@@ -1,3 +1,6 @@
+import dataAccess.FileManager;
+import dataModel.DataSet;
+import java.util.Scanner;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -31,7 +34,10 @@ public class Main {
                 }
             }
         }else{
-            help();
+            System.out.println("\n===== Question and Answer Data Manager ======\n"
+                    + "\n 0 - Preprocess"
+                    + "\n 1 - Labeling"
+                    + "\n 2 - Selection");
         }
     }
     
@@ -73,7 +79,11 @@ public class Main {
      * @param preprocessed_path 
      */
     private static void preprocess(String raw_path, String preprocessed_path) {
-        System.out.println("PREPROCESS");
+        System.out.println("\n[QnADM] Preprocess started...");
+        DataSet ds = FileManager.loadRaw(raw_path);
+        System.out.print("\n[QnADM] Saving dataset...");
+        FileManager.save(ds, preprocessed_path);
+        System.out.println("[QnADM] Done!");
     }
     
     /**

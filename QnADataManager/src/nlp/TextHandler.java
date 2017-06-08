@@ -154,11 +154,11 @@ public class TextHandler {
     }
     
     public static String tagString(String text){
-        String taggers_url = "POSTagger/stanford-postagger-full-2015-12-09/models/";
+        String taggers_url = "../nlp/POSTagger/stanford-postagger-full-2015-12-09/models/";
         String trained_tagger = "english-left3words-distsim.tagger";
         MaxentTagger tagger = new MaxentTagger(taggers_url+trained_tagger);
         
-        String taggedString = tagger.tagString(text.toLowerCase());
+        String taggedString = tagger.tagString(text);
         
         return taggedString;
     }

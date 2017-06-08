@@ -22,7 +22,7 @@ public class testWord {
      */
     public static void main(String[] args) {
         List<Paraphrase> paraphrasesSet =  ParaphraseManager.ImportPack() ;
-        Sentence s = new Sentence("I need a list of Horror movies with Madonna.", paraphrasesSet);
+        Sentence s = new Sentence("I need a list of horror movies.", paraphrasesSet);
         System.out.println(s.toJSON());
     }
 
