@@ -23,10 +23,11 @@ public class Word {
     private static final String TAG = "tag";
     private static final String LENGTH = "length";
 
+    private static final String SUBCATEGORY = "subcategory";
     private static final String CONTAINED_IN_A_CATEGORY = "contained_in_a_category";
     private static final String CONTAINED_IN_A_CATEGORY_INSTANCE = "contained_in_a_category_instance";
     private static final String CONTAINED_IN_A_RELATION = "contained_in_a_relation";
-    
+
     private static final String CATEGORIES = "categories";
     private static final String CATEGORY_INSTANCES = "category_instances";
     private static final String RELATIONS = "relations";
@@ -72,6 +73,7 @@ public class Word {
     private long length;
     private boolean stopword;
 
+    private boolean subcategory;
     private boolean containedInACategory;
     private boolean containedInACategoryInstance;
     private boolean containedInARelation;
@@ -110,7 +112,6 @@ public class Word {
     private boolean puwicCategoryInstance;
     private boolean puwicRelation;
 
-
     /**
      * Builds the object.
      *
@@ -133,6 +134,7 @@ public class Word {
         this.value = value;
         this.tag = "";
         this.length = value.length();
+        subcategory = false;
         semanticAnalysis();
     }
 
@@ -144,17 +146,46 @@ public class Word {
      */
     public Word(JSONObject jWord) {
 
-        if (jWord.containsKey(VALUE)) {
-            value = (String) jWord.get(VALUE);
+        this.value = (String) jWord.get(VALUE);
+        this.length = (long) jWord.get(LENGTH);
+        this.tag = (String) jWord.get(TAG);
+        this.stopword = isStopword();
+
+        if (jWord.containsKey(SUBCATEGORY)) {
+            this.subcategory = (boolean) jWord.get(SUBCATEGORY);
         } else {
-            value = null;
+            this.subcategory = false;
         }
 
-        if (jWord.containsKey(TAG)) {
-            tag = (String) jWord.get(TAG);
-        } else {
-            tag = null;
-        }
+        this.categories = jSONArrayToStringList((JSONArray) jWord.get(CATEGORIES));
+        this.categoryInstances = jSONArrayToStringList((JSONArray) jWord.get(CATEGORY_INSTANCES));;
+        this.relations = jSONArrayToStringList((JSONArray) jWord.get(RELATIONS));
+
+        this.containedInACategory = (boolean) jWord.get(CONTAINED_IN_A_CATEGORY);
+        this.containedInACategoryInstance = (boolean) jWord.get(CONTAINED_IN_A_CATEGORY_INSTANCE);
+        this.containedInARelation = (boolean) jWord.get(CONTAINED_IN_A_RELATION);
+
+        /*
+        this.lwTag = null;
+        this.lwicCategory = null;
+        this.lwicCategoryInstance = null;
+        this.lwicRelation = null;
+        
+        this.nwTag = null;
+        this.nwicCategory = null;
+        this.nwicCategoryInstance = null;
+        this.nwicRelation = null;
+        
+        this.puwTag = null;
+        this.puwicCategory = null;
+        this.puwicCategoryInstance = null;
+        this.puwicRelation = null;
+        
+        this.snwTag = null;
+        this.snwicCategory = null;
+        this.snwicCategoryInstance = null;
+        this.snwicRelation = null;
+         */
     }
 
     /**
@@ -163,31 +194,31 @@ public class Word {
      * @return JSONObject
      */
     public JSONObject toJSON() {
-        if(!stopword){
-        JSONObject jWord = new JSONObject();
-        if (!value.isEmpty() && value != null) {
-            jWord.put(VALUE, value);
-            jWord.put(LENGTH, length);
-            if (!tag.isEmpty() && tag != null) {
-                jWord.put(TAG, tag);
-            }
-            jWord.put(CONTAINED_IN_A_CATEGORY, isContainedInACategory());
-            if (isContainedInACategory()) {
-                jWord.put(CATEGORIES, stringListToJSONArray(categories));
-            }
-            jWord.put(CONTAINED_IN_A_CATEGORY_INSTANCE, isContainedInACategoryInstance());
-            if(isContainedInACategoryInstance()){
-                jWord.put(CATEGORY_INSTANCES, stringListToJSONArray(categoryInstances));
-            }
+        if (!stopword) {
+            JSONObject jWord = new JSONObject();
+            if (!value.isEmpty() && value != null) {
+                jWord.put(VALUE, value);
+                jWord.put(LENGTH, length);
+                if (!tag.isEmpty() && tag != null) {
+                    jWord.put(TAG, tag);
+                }
+                jWord.put(CONTAINED_IN_A_CATEGORY, isContainedInACategory());
+                if (isContainedInACategory()) {
+                    jWord.put(CATEGORIES, stringListToJSONArray(categories));
+                }
+                jWord.put(CONTAINED_IN_A_CATEGORY_INSTANCE, isContainedInACategoryInstance());
+                if (isContainedInACategoryInstance()) {
+                    jWord.put(CATEGORY_INSTANCES, stringListToJSONArray(categoryInstances));
+                }
 
-            jWord.put(CONTAINED_IN_A_RELATION, isContainedInARelation());
-            if(isContainedInARelation()){
-                jWord.put(RELATIONS, stringListToJSONArray(relations));
+                jWord.put(CONTAINED_IN_A_RELATION, isContainedInARelation());
+                if (isContainedInARelation()) {
+                    jWord.put(RELATIONS, stringListToJSONArray(relations));
+                }
+                jWord.put(SUBCATEGORY, subcategory);
             }
-            
-        }
-        return jWord;
-        }else{
+            return jWord;
+        } else {
             return null;
         }
     }
@@ -196,7 +227,6 @@ public class Word {
         return stopword;
     }
 
-    
     /**
      * Returns the word value
      */
@@ -232,12 +262,20 @@ public class Word {
 
     private List<String> jSONArrayToStringList(JSONArray jList) {
         List<String> stringList = new ArrayList<>();
-
-        for (Object object : jList) {
-            stringList.add((String) object);
+        if (jList != null) {
+            for (Object object : jList) {
+                stringList.add((String) object);
+            }
         }
-
         return stringList;
+    }
+
+    public boolean isSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(boolean subcategory) {
+        this.subcategory = subcategory;
     }
 
     public long getLength() {
@@ -256,7 +294,6 @@ public class Word {
         return containedInARelation;
     }
 
-
     public List<String> getCategories() {
         return categories;
     }
@@ -268,9 +305,6 @@ public class Word {
     public List<String> getRelations() {
         return relations;
     }
-
-
-    
 
     public boolean isNwicCategory() {
         return nwicCategory;
@@ -335,8 +369,6 @@ public class Word {
     public String getPuwTag() {
         return puwTag;
     }
-    
-    
 
     private void semanticAnalysis() {
         //Stop-words
@@ -360,8 +392,7 @@ public class Word {
                 System.out.println("[WORD] Error: While acessing NELL KB.");
                 e.printStackTrace();
             }
-            
-            
+
             //Category Instance
             containedInACategoryInstance = false;
             categoryInstances = new ArrayList<>();
@@ -372,8 +403,7 @@ public class Word {
                         JSONObject jObject = (JSONObject) object;
                         String instance_name = (String) jObject.get("instance_name");
                         categoryInstances.add(instance_name);
-                        
-                        
+
                     }
                     containedInACategoryInstance = true;
                     categoryInstanceResult = null;
@@ -383,7 +413,7 @@ public class Word {
                 System.out.println("[WORD] Error: While acessing NELL KB.");
                 e.printStackTrace();
             }
-            
+
             //Relation
             containedInARelation = false;
             relations = new ArrayList<>();
@@ -402,35 +432,29 @@ public class Word {
                 System.out.println("[WORD] Error: While acessing NELL KB.");
                 e.printStackTrace();
             }
-            
-            
 
-        }else{
+        } else {
             stopword = true;
         }
     }
-    
+
     /**
-     * Collect informations of a word (by parameter) an store
-     * informations:
-     *  - Tag
-     *  - contained in a Category
-     *  - contained in a Relations
-     *  - contained in a Category instance
-     * 
+     * Collect informations of a word (by parameter) an store informations: -
+     * Tag - contained in a Category - contained in a Relations - contained in a
+     * Category instance
+     *
      * @param word - the word that have informations
-     * @param position - An integer that should be one of these numbers {-2, -1, 1, 2},
-     * represents the position of the word that has the informations
+     * @param position - An integer that should be one of these numbers {-2, -1,
+     * 1, 2}, represents the position of the word that has the informations
      */
-    
-    public void collectInformation(Word word, int position){
-        switch (position){
+    public void collectInformation(Word word, int position) {
+        switch (position) {
             case -2:
                 puwTag = word.getTag();
                 puwicCategory = word.isContainedInACategory();
                 puwicCategoryInstance = word.isContainedInACategoryInstance();
                 puwicRelation = word.isContainedInARelation();
-               break;
+                break;
             case -1:
                 lwTag = word.getLwTag();
                 lwicCategory = word.isContainedInACategory();
@@ -449,8 +473,8 @@ public class Word {
                 snwicCategoryInstance = word.isContainedInACategoryInstance();
                 snwicRelation = word.isContainedInARelation();
                 break;
-            
+
         }
-    } 
+    }
 
 }

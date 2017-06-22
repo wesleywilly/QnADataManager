@@ -9,8 +9,11 @@ import dataAccess.FileManager;
 import dataAccess.ParaphraseManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import weka.core.DenseInstance;
+import weka.core.Instances;
 
 /**
  *
@@ -164,6 +167,74 @@ public class Sentence {
                 words.get(i).collectInformation(words.get(i+2), 2);
             }
         }
+    }
+    
+    public void rotulate(Instances instances){
+        
+        
+        Scanner s = new Scanner(System.in);
+        
+        for(int i=0; i<words.size()-1;i++){
+                for(int j=i+1;j<words.size()&& j<(i+3);j++){
+                    if(words.get(j).isContainedInACategory()){
+                        double[] values = new double[12];                
+                        System.out.println("\""+words.get(i).getValue()+" "+words.get(j).getValue()+"\"\n"
+                                + "is subcategory?\n"
+                                + "1 - YES\n"
+                                + "2 - NO");
+                        if(s.nextInt() == 1){
+                            words.get(i).setSubcategory(true);
+                        }
+                        values[0] = instances.attribute(0).indexOfValue(words.get(i).getTag());
+                        
+                        values[1] = words.get(i).getLength();
+                        
+                        if(words.get(i).isContainedInACategory())
+                            values[2] = instances.attribute(2).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[2] = instances.attribute(2).indexOfValue(wekaDB.datasetGenerator.NO);
+                            
+                        if(words.get(i).isContainedInACategoryInstance())
+                            values[3] = instances.attribute(3).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[3] = instances.attribute(3).indexOfValue(wekaDB.datasetGenerator.NO);
+                            
+                        if(words.get(i).isContainedInARelation())
+                            values[4] = instances.attribute(4).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[4] = instances.attribute(4).indexOfValue(wekaDB.datasetGenerator.NO);
+                        
+                        values[5] = instances.attribute(5).indexOfValue(words.get(j).getTag());
+                        
+                        values[6] = words.get(j).getLength();
+                        
+                        if(words.get(j).isContainedInACategory())
+                            values[7] = instances.attribute(7).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[7] = instances.attribute(7).indexOfValue(wekaDB.datasetGenerator.NO);
+                        
+                        if(words.get(j).isContainedInACategoryInstance())
+                            values[8] = instances.attribute(8).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[8] = instances.attribute(8).indexOfValue(wekaDB.datasetGenerator.NO);
+                        
+                        if(words.get(j).isContainedInARelation())
+                            values[9] = instances.attribute(9).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[9] = instances.attribute(9).indexOfValue(wekaDB.datasetGenerator.NO);
+                        
+                        values[10] = j-i;
+                        
+                        if(words.get(i).isSubcategory())
+                            values[11] = instances.attribute(11).indexOfValue(wekaDB.datasetGenerator.YES);
+                        else
+                            values[11] = instances.attribute(11).indexOfValue(wekaDB.datasetGenerator.NO);
+                        instances.add(new DenseInstance(1.0, values));
+                    }
+                }
+            
+        }
+
     }
     
     
