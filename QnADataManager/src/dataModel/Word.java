@@ -31,41 +31,6 @@ public class Word {
     private static final String CATEGORY_INSTANCES = "category_instances";
     private static final String RELATIONS = "relations";
 
-    private static final String NW_TAG = "nw_tag";
-    private static final String NW_IC_CATEGORY = "nw_ic_category";
-    private static final String NW_IC_CATEGORY_INSTANCE = "nw_ic_category_instance";
-    private static final String NW_IC_RELATION = "nw_ic_relation";
-
-    private static final String NW_CATEGORIES = "nw_categories";
-    private static final String NW_CATEGORY_INSTANCES = "nw_category_instances";
-    private static final String NW_RELATIONS = "nw_relations";
-
-    private static final String SNW_TAG = "snw_tag";
-    private static final String SNW_IC_CATEGORY = "snw_ic_category";
-    private static final String SNW_IC_CATEGORY_INSTANCE = "snw_ic_category_instance";
-    private static final String SNW_IC_RELATION = "snw_ic_relation";
-
-    private static final String SNW_CATEGORIES = "snw_categories";
-    private static final String SNW_CATEGORY_INSTANCES = "snw_category_instances";
-    private static final String SNW_RELATIONS = "snw_relations";
-
-    private static final String LW_TAG = "lw_tag";
-    private static final String LW_IC_CATEGORY = "lw_ic_category";
-    private static final String LW_IC_CATEGORY_INSTANCE = "lw_ic_category_instance";
-    private static final String LW_IC_RELATION = "lw_ic_relation";
-
-    private static final String LW_CATEGORIES = "lw_categories";
-    private static final String LW_CATEGORY_INSTANCES = "lw_category_instances";
-    private static final String LW_RELATIONS = "lw_relations";
-
-    private static final String PUW_TAG = "puw_tag";
-    private static final String PUW_IC_CATEGORY = "puw_ic_category";
-    private static final String PUW_IC_CATEGORY_INSTANCE = "puw_ic_category_instance";
-    private static final String PUW_IC_RELATION = "puw_ic_relation";
-
-    private static final String PUW_CATEGORIES = "puw_categories";
-    private static final String PUW_CATEGORY_INSTANCES = "puw_category_instances";
-    private static final String PUW_RELATIONS = "puw_relations";
 
     private String value;
     private String tag;
@@ -79,37 +44,6 @@ public class Word {
     private List<String> categories;
     private List<String> categoryInstances;
     private List<String> relations;
-
-    //Informations about neibourhood
-    /**
-     * Informations about some attributes:
-     *
-     * nwic = next word is contained in a ... snwic = second next word is
-     * contained in a ... lwic = last word is contained in a ... puwic =
-     * penultimate word is contained in a ...
-     *
-     *
-     */
-    private String nwTag;
-    private boolean nwicCategory;
-    private boolean nwicCategoryInstance;
-    private boolean nwicRelation;
-
-    private String snwTag;
-    private boolean snwicCategory;
-    private boolean snwicCategoryInstance;
-    private boolean snwicRelation;
-
-    private String lwTag;
-    private boolean lwicCategory;
-    private boolean lwicCategoryInstance;
-    private boolean lwicRelation;
-
-    private String puwTag;
-    private boolean puwicCategory;
-    private boolean puwicCategoryInstance;
-    private boolean puwicRelation;
-
 
     /**
      * Builds the object.
@@ -270,74 +204,6 @@ public class Word {
     }
 
 
-    
-
-    public boolean isNwicCategory() {
-        return nwicCategory;
-    }
-
-    public boolean isNwicCategoryInstance() {
-        return nwicCategoryInstance;
-    }
-
-    public boolean isNwicRelation() {
-        return nwicRelation;
-    }
-
-    public boolean isSnwicCategory() {
-        return snwicCategory;
-    }
-
-    public boolean isSnwicCategoryInstance() {
-        return snwicCategoryInstance;
-    }
-
-    public boolean isSnwicRelation() {
-        return snwicRelation;
-    }
-
-    public boolean isLwicCategory() {
-        return lwicCategory;
-    }
-
-    public boolean isLwicCategoryInstance() {
-        return lwicCategoryInstance;
-    }
-
-    public boolean isLwicRelation() {
-        return lwicRelation;
-    }
-
-    public boolean isPuwicCategory() {
-        return puwicCategory;
-    }
-
-    public boolean isPuwicCategoryInstance() {
-        return puwicCategoryInstance;
-    }
-
-    public boolean isPuwicRelation() {
-        return puwicRelation;
-    }
-
-    public String getNwTag() {
-        return nwTag;
-    }
-
-    public String getSnwTag() {
-        return snwTag;
-    }
-
-    public String getLwTag() {
-        return lwTag;
-    }
-
-    public String getPuwTag() {
-        return puwTag;
-    }
-    
-    
-
     private void semanticAnalysis() {
         //Stop-words
         if (!StopWords.contains(value)) {
@@ -402,55 +268,11 @@ public class Word {
                 System.out.println("[WORD] Error: While acessing NELL KB.");
                 e.printStackTrace();
             }
-            
-            
-
+        S
         }else{
             stopword = true;
         }
     }
-    
-    /**
-     * Collect informations of a word (by parameter) an store
-     * informations:
-     *  - Tag
-     *  - contained in a Category
-     *  - contained in a Relations
-     *  - contained in a Category instance
-     * 
-     * @param word - the word that have informations
-     * @param position - An integer that should be one of these numbers {-2, -1, 1, 2},
-     * represents the position of the word that has the informations
-     */
-    
-    public void collectInformation(Word word, int position){
-        switch (position){
-            case -2:
-                puwTag = word.getTag();
-                puwicCategory = word.isContainedInACategory();
-                puwicCategoryInstance = word.isContainedInACategoryInstance();
-                puwicRelation = word.isContainedInARelation();
-               break;
-            case -1:
-                lwTag = word.getLwTag();
-                lwicCategory = word.isContainedInACategory();
-                lwicCategoryInstance = word.isContainedInACategoryInstance();
-                lwicRelation = word.isContainedInARelation();
-                break;
-            case 1:
-                nwTag = word.getLwTag();
-                nwicCategory = word.isContainedInACategory();
-                nwicCategoryInstance = word.isContainedInACategoryInstance();
-                nwicRelation = word.isContainedInARelation();
-                break;
-            case 2:
-                snwTag = word.getLwTag();
-                snwicCategory = word.isContainedInACategory();
-                snwicCategoryInstance = word.isContainedInACategoryInstance();
-                snwicRelation = word.isContainedInARelation();
-                break;
-            
-        }
-    } 
+
 
 }
