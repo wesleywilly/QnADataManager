@@ -170,6 +170,29 @@ public class FileManager {
         return dataSet;
     }
     
+    public static DataSet merge(DataSet source, DataSet destination){
+        destination.getTopics().addAll(source.getTopics());
+        
+        return destination;
+    }
+    
+    public static DataSet removeDuplicate(DataSet dataSet){
+        System.out.println("Initial Size: "+dataSet.getTopics().size());
+        for(int i=0; i<dataSet.getTopics().size();i++){
+            Topic topic1 = dataSet.getTopics().get(i);
+            for(int j=i+1;j<dataSet.getTopics().size();j++){
+                Topic topic2 = dataSet.getTopics().get(j);
+                if(topic1.getSubject().getText().equals(topic2.getSubject().getText())){
+                    System.out.println("\nTopic "+i+": "+topic1.getSubject().getText());
+                    System.out.println("Topic "+j+": "+topic2.getSubject().getText());
+                    System.out.println("Removed!!!");
+                    dataSet.getTopics().remove(j);
+                }
+            }
+        }
+        System.out.println("\n\nFinal Size: "+dataSet.getTopics().size());
+        return dataSet;
+    }
     
     
 }
